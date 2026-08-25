@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAYO PERICO TACTICAL OS v10.5</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+        body { background-color: #030712; color: #00ff41; font-family: 'Share Tech Mono', monospace; overflow-x: hidden; }
+        .cyber-panel { border: 1px solid #10b981; background: rgba(16, 185, 129, 0.02); box-shadow: 0 0 10px rgba(16, 185, 129, 0.1); position: relative; }
+        .cyber-panel::before { content: ''; position: absolute; top: 0; left: 0; width: 8px; height: 8px; border-top: 2px solid #34d399; border-left: 2px solid #34d399; }
+        .cyber-panel::after { content: ''; position: absolute; bottom: 0; right: 0; width: 8px; height: 8px; border-bottom: 2px solid #34d399; border-right: 2px solid #34d399; }
+        .cyber-input { background: #01161e; border: 1px solid #059669; color: #34d399; padding: 6px; width: 100%; outline: none; transition: 0.2s; }
+        .cyber-input:focus { border-color: #34d399; box-shadow: 0 0 8px #34d399; background: #022c22; }
+        .btn-cyber { background: #064e3b; border: 1px solid #34d399; color: #34d399; padding: 10px 20px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; transition: 0.3s; font-weight: bold; }
+        .btn-cyber:hover:not(:disabled) { background: #34d399; color: #030712; box-shadow: 0 0 15px #34d399; }
+        .btn-cyber:disabled { background: #1f2937; border-color: #4b5563; color: #6b7280; cursor: not-allowed; box-shadow: none; }
+        .text-neon { text-shadow: 0 0 8px rgba(52, 211, 153, 0.6); }
+        table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+        th, td { border: 1px solid #065f46; padding: 8px; text-align: center; font-size: 0.9rem; }
+        th { background: rgba(6, 95, 70, 0.4); color: #34d399; }
+        tr:hover td { background: rgba(16, 185, 129, 0.1); }
+        .cyber-progress-bar { width: 90px; height: 8px; background: #012a1a; border: 1px solid #34d399; position: relative; display: inline-block; vertical-align: middle; margin-left: 4px; }
+        .progress-fill { height: 100%; background: #34d399; box-shadow: 0 0 6px #34d399; width: 0%; transition: width 0.3s; }
+        .tactical-badge { display: inline-block; padding: 2px 8px; font-size: 0.75rem; font-weight: bold; border-radius: 2px; margin-right: 6px; }
+        .badge-airstrip { background: rgba(59, 130, 246, 0.2); border: 1px solid #3b82f6; color: #93c5fd; }
+        .badge-dock { background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #fde68a; }
+        .badge-mansion { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #6ee7b7; }
+        .status-badge { padding: 4px 12px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; letter-spacing: 1px; }
+        .status-pending { background: rgba(245, 158, 11, 0.2); border: 1px solid #f59e0b; color: #fde68a; animation: pulse 2s infinite; }
+        .status-completed { background: rgba(16, 185, 129, 0.2); border: 1px solid #10b981; color: #6ee7b7; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+        .fade-in { animation: fadeIn 0.4s ease-in-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .ring-spin-fast { animation: spin 1s linear infinite; }
+        .ring-spin-slow-rev { animation: spin 3s linear infinite reverse; }
+        .glitch-text { animation: glitch 0.2s linear infinite; }
+        @keyframes glitch { 0% { transform: translate(0) } 20% { transform: translate(-2px, 1px) } 40% { transform: translate(-1px, -1px) } 60% { transform: translate(2px, 1px) } 80% { transform: translate(1px, -1px) } 100% { transform: translate(0) } }
+        /* Backdrop Blur for modals */
+        .backdrop-blur-sm { backdrop-filter: blur(4px); }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+<!-- VIEW: LANDING PAGE -->
+<div id="view-landing" class="min-h-[80vh] flex flex-col items-center justify-center fade-in">
+    <h1 class="text-4xl md:text-6xl font-bold text-neon mb-2 text-center tracking-widest">[ KOSATKA NETWORK ]</h1>
+    <h2 class="text-xl md:text-2xl text-emerald-300 mb-8 text-center tracking-widest">CAYO PERICO TACTICAL OS v10.5</h2>
+    <p class="text-emerald-500 mb-12 text-center text-sm md:text-base max-w-lg border border-emerald-900 bg-black/40 p-4 rounded shadow-[0_0_15px_rgba(16,185,129,0.2)]">
+        "ระบบเครือข่ายสำหรับวางแผนยุทธวิธีและคำนวณส่วนแบ่งการปฏิบัติการ Cayo Perico ข้อมูลลับเฉพาะ (Classified) ห้ามเผยแพร่"
+    </p>
+    <button class="btn-cyber text-xl md:text-2xl px-12 py-4 shadow-[0_0_20px_rgba(52,211,153,0.4)]" onclick="switchView('auth')">>> INITIATE SYSTEM <<</button>
+</div>
+
+<!-- VIEW: SECURITY AUTHENTICATION -->
+<div id="view-auth" class="min-h-[80vh] flex flex-col items-center justify-center hidden fade-in">
+    <div class="cyber-panel p-8 md:p-12 max-w-md w-full bg-black/80 flex flex-col items-center border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.15)]">
+        <div class="relative w-32 h-32 mb-8">
+            <div class="absolute inset-0 border-4 border-t-emerald-400 border-r-transparent border-b-emerald-800 border-l-transparent rounded-full ring-spin-fast"></div>
+            <div class="absolute inset-2 border-4 border-l-amber-400 border-b-transparent border-r-amber-800 border-t-transparent rounded-full ring-spin-slow-rev"></div>
+            <div class="absolute inset-0 flex items-center justify-center"><span id="lock-icon" class="text-3xl filter drop-shadow-[0_0_8px_rgba(16,185,129,0.8)]">🔒</span></div>
+        </div>
+        <h2 class="text-xl font-bold text-emerald-400 mb-2 tracking-widest text-center">RESTRICTED AREA</h2>
+        <p class="text-xs text-emerald-600 mb-6 text-center">PLEASE ENTER AUTHORIZATION CLEARANCE CODE</p>
+        <input type="password" id="auth-input" class="cyber-input text-center text-2xl tracking-[0.3em] mb-4 py-3 bg-black/50 border-emerald-500 text-emerald-300 placeholder-emerald-800" placeholder="••••••••" onkeypress="handleAuthKeyPress(event)">
+        <div id="auth-message" class="text-sm font-bold text-center h-8 mb-4 flex items-center justify-center w-full"><span class="text-emerald-500">SYSTEM STANDBY...</span></div>
+        <button id="auth-btn" class="btn-cyber w-full py-3 text-lg" onclick="verifyAccess()">DECRYPT & ENTER SITE</button>
+    </div>
+</div>
+
+<!-- VIEW: DASHBOARD -->
+<div id="view-dashboard" class="max-w-7xl mx-auto hidden fade-in">
+    <div class="flex flex-wrap justify-between items-center mb-8 border-b border-emerald-800 pb-4">
+        <h1 class="text-3xl font-bold text-neon tracking-wider">[ TACTICAL DASHBOARD ]</h1>
+        <button class="btn-cyber" onclick="startNewScouting()">➕ INITIATE NEW SCOUTING</button>
+    </div>
+
+    <!-- Active Operations -->
+    <div class="cyber-panel p-6 mb-8 border-amber-500 bg-amber-950/10">
+        <h2 class="text-xl font-bold mb-4 text-amber-400">⚡ ACTIVE OPERATIONS (IN PROGRESS / PENDING)</h2>
+        <div class="overflow-x-auto">
+            <table>
+                <thead><tr><th>Time</th><th>Host</th><th>Crew</th><th>Target</th><th>Est. Value</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody id="dash-active-body"><tr><td colspan="7" class="text-gray-500">Connecting to secure server...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Archives -->
+    <div class="cyber-panel p-6">
+        <h2 class="text-xl font-bold mb-4 text-emerald-500">:: MISSION ARCHIVES (COMPLETED)</h2>
+        <div class="overflow-x-auto">
+            <table>
+                <thead><tr><th>Completed Time</th><th>Next Setup</th><th>Host</th><th>Crew</th><th>Target</th><th>Net Payout</th><th>Actions</th></tr></thead>
+                <tbody id="dash-archive-body"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- VIEW: SCOUTING (PRIVATE/EDIT) -->
+<div id="view-scouting" class="max-w-7xl mx-auto hidden fade-in" oninput="updateLiveStats()">
+    <div class="flex flex-wrap justify-between items-center mb-6 border-b border-emerald-800 pb-4">
+        <h1 id="scouting-title" class="text-3xl font-bold text-neon tracking-wider">[ 👁️ LIVE SCOUTING MODE ]</h1>
+        <button class="btn-cyber border-red-500 text-red-400 hover:bg-red-500 hover:text-black hover:shadow-red-500" onclick="switchView('dashboard')">CANCEL ABORT</button>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+        <div class="cyber-panel p-4"><label class="block mb-2 text-xs text-emerald-400">HOST OPERATOR</label><select id="host" class="cyber-input"><option>Firsto</option><option>Major</option><option>Norr</option></select></div>
+        <div class="cyber-panel p-4"><label class="block mb-2 text-xs text-emerald-400">CREW SIZE</label><select id="players" class="cyber-input" onchange="updateLiveStats()"><option value="1">1 Player</option><option value="2">2 Players</option><option value="3" selected>3 Players</option><option value="4">4 Players</option></select></div>
+        <div class="cyber-panel p-4"><label class="block mb-2 text-xs text-emerald-400">ROUTE</label><select id="route-mode" class="cyber-input text-amber-300"><option value="auto">Auto (คำนวณตามจริง)</option><option value="kosatka">Kosatka (บังคับลุยในบ้าน)</option><option value="longfin">Longfin (แวะนอกบ้าน)</option></select></div>
+        <div class="cyber-panel p-4"><label class="block mb-2 text-xs text-emerald-400">DIFFICULTY</label><select id="mode" class="cyber-input"><option value="Normal">Normal Mode</option><option value="Hard">Hard Mode (+10%)</option></select></div>
+        <div class="cyber-panel p-4"><label class="block mb-2 text-xs text-emerald-400">PRIMARY TARGET</label><select id="primary" class="cyber-input"><option value="Tequila">Sinsimito Tequila</option><option value="Ruby Necklace">Ruby Necklace</option><option value="Bearer Bonds">Bearer Bonds</option><option value="Pink Diamond">Pink Diamond</option><option value="Black Panther">Panther Statue</option></select></div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="cyber-panel p-6">
+            <div class="flex flex-wrap justify-between items-center mb-4 border-b border-emerald-800 pb-2"><h2 class="text-sm font-bold text-neon">:: COMPOUND LOOT [ 🏰 El Rubio's Mansion ]</h2><div class="text-xs text-emerald-300"><span id="inside-badge">--</span> <span id="inside-stat-text">LOAD: 0% / 300%</span><div class="cyber-progress-bar"><div id="inside-bar" class="progress-fill"></div></div></div></div>
+            <div id="compound-rooms" class="space-y-3"></div>
+        </div>
+        <div class="cyber-panel p-6">
+            <h2 class="text-sm font-bold text-neon mb-4 border-b border-emerald-800 pb-2">:: PERIMETER LOOT (OUTSIDE)</h2>
+            <div id="outside-rooms" class="space-y-4"></div>
+        </div>
+    </div>
+
+    <div class="cyber-panel p-4 mb-6 border-amber-500 bg-amber-950/10">
+        <div class="flex flex-wrap justify-between items-center gap-4">
+            <div><h3 class="text-sm font-bold text-amber-400">⚡ AI SCOUTING RECOMMENDATION</h3><p class="text-xs text-amber-200">วิเคราะห์ความจุจากทรัพย์ (1คน=100-200% | 2คน=200-300% | 3คน=300-400% | 4คน=400%+)</p></div>
+            <div class="flex gap-4 text-xs">
+                <div class="bg-black/50 border border-emerald-600 p-2 text-center"><span class="text-emerald-400 block font-bold">🏰 COMPOUND</span><span id="rec-inside-players" class="text-white text-sm font-bold">-</span><span id="rec-inside-load" class="text-gray-400 block text-[10px]">(0%)</span></div>
+                <div class="bg-black/50 border border-amber-600 p-2 text-center"><span class="text-amber-400 block font-bold">🗺️ TOTAL</span><span id="rec-total-players" class="text-white text-sm font-bold">-</span><span id="rec-total-load" class="text-gray-400 block text-[10px]">(0%)</span></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex justify-center mb-8">
+        <button id="btn-broadcast" class="btn-cyber text-xl px-12 py-4 text-amber-300 border-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.3)] hover:bg-amber-500 hover:text-black" onclick="broadcastPlan()">📡 BROADCAST TACTICAL PLAN</button>
+    </div>
+</div>
+
+<!-- VIEW: OPERATION DETAIL -->
+<div id="view-detail" class="max-w-7xl mx-auto hidden fade-in">
+    <div class="flex flex-wrap justify-between items-center mb-6 border-b border-emerald-800 pb-4">
+        <div>
+            <h1 class="text-3xl font-bold text-neon tracking-wider">[ DEPLOYMENT BRIEFING ]</h1>
+            <p id="detail-op-id" class="text-sm text-gray-400 mt-1"></p>
+        </div>
+        <button class="btn-cyber" onclick="switchView('dashboard')"><< BACK TO DASHBOARD</button>
+    </div>
+
+    <div class="cyber-panel p-6 mb-6 bg-black/40 border-emerald-700">
+        <h3 class="text-lg font-bold mb-4 text-emerald-300 border-b border-emerald-800 pb-2">>> SCOUTED INTEL SUMMARY (ทรัพย์ทั้งหมดที่สำรวจพบ)</h3>
+        <div id="detail-intel-summary" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div class="cyber-panel p-6"><div id="detail-task-assignment" class="space-y-4"></div></div>
+        <div class="cyber-panel p-6"><div id="detail-financial-details" class="space-y-2"></div></div>
+    </div>
+
+    <div id="detail-action-panel" class="cyber-panel p-6 border-amber-500 bg-amber-950/10 flex flex-wrap justify-between items-center hidden gap-4">
+        <div>
+            <h3 class="font-bold text-amber-400 text-lg">OPERATION STATUS: <span class="status-badge status-pending ml-2">PENDING EXECUTION</span></h3>
+            <p class="text-sm text-amber-200 mt-1">เมื่อปฏิบัติการปล้นสำเร็จ ให้กดปุ่มยืนยันเพื่อบันทึกประวัติการปล้น</p>
+        </div>
+        <div class="flex gap-4">
+            <button id="btn-edit-op" class="btn-cyber border-amber-500 text-amber-400 hover:bg-amber-500 hover:text-black">✏️ EDIT PLAN</button>
+            <button class="btn-cyber border-red-500 text-red-400 hover:bg-red-500 hover:text-black" onclick="promptDelete(currentViewingId, true)">🗑️ ABORT</button>
+            <button id="btn-complete-op" class="btn-cyber text-lg bg-emerald-900 border-emerald-400 text-emerald-400 hover:bg-emerald-400 hover:text-black">✅ MARK AS COMPLETED</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: DELETE CONFIRMATION (NEW) -->
+<div id="modal-delete" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm hidden fade-in">
+    <div class="cyber-panel p-8 max-w-md w-full bg-black/90 border-red-500 shadow-[0_0_30px_rgba(248,113,113,0.3)] text-center relative overflow-hidden">
+        <!-- Background glitch effect lines -->
+        <div class="absolute inset-0 opacity-10 bg-[repeating-linear-gradient(0deg,transparent,transparent_2px,#f87171_2px,#f87171_4px)]"></div>
+        <div class="relative z-10">
+            <div class="text-6xl mb-4 text-red-500 animate-pulse">⚠️</div>
+            <h2 class="text-2xl font-bold text-red-500 mb-2 tracking-widest glitch-text">DATA PURGE WARNING</h2>
+            <p class="text-sm text-red-300 mb-8 leading-relaxed">Are you sure you want to permanently erase this mission record? This action will wipe the data from the server and cannot be undone.</p>
+            <div class="flex justify-center gap-4">
+                <button class="btn-cyber border-gray-500 text-gray-400 hover:bg-gray-500 hover:text-black" onclick="closeDeleteModal()">ABORT PURGE</button>
+                <button class="btn-cyber border-red-500 text-red-500 hover:bg-red-500 hover:text-black shadow-[0_0_15px_rgba(248,113,113,0.4)]" onclick="executeDelete()">CONFIRM & ERASE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- FIREBASE CONFIG ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyAnj14qVXv5XPKZ_oiogJ9DF3bnVzyDLM",
+        authDomain: "cayo-perico-tactical.firebaseapp.com",
+        databaseURL: "https://cayo-perico-tactical-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "cayo-perico-tactical",
+        storageBucket: "cayo-perico-tactical.appspot.com",
+        messagingSenderId: "204797008230",
+        appId: "1:204797008230:web:30bdeeb216bb10f00e2f07"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const dbRef = firebase.database().ref('cayo_operations');
+
+    // --- SECURITY AUTHENTICATION LOGIC ---
+    const SECURE_CODE = "ragnarockstar";
+    let failedAttempts = 0;
+    let baseCooldown = 30; 
+
+    function handleAuthKeyPress(e) { if (e.key === 'Enter') verifyAccess(); }
+
+    function verifyAccess() {
+        let inputEl = document.getElementById('auth-input'), msgEl = document.getElementById('auth-message'), iconEl = document.getElementById('lock-icon');
+        
+        if (inputEl.value === SECURE_CODE) {
+            inputEl.disabled = true; document.getElementById('auth-btn').disabled = true;
+            msgEl.innerHTML = '<span class="text-emerald-400 font-bold text-lg animate-pulse">ACCESS GRANTED. DECRYPTING...</span>';
+            iconEl.innerText = "🔓"; iconEl.classList.add("text-emerald-400");
+            failedAttempts = 0;
+            
+            setTimeout(() => {
+                inputEl.value = ''; inputEl.disabled = false; document.getElementById('auth-btn').disabled = false;
+                iconEl.innerText = "🔒"; iconEl.classList.remove("text-emerald-400");
+                msgEl.innerHTML = '<span class="text-emerald-500">SYSTEM STANDBY...</span>';
+                switchView('dashboard');
+            }, 1500);
+        } else {
+            failedAttempts++; inputEl.value = '';
+            if (failedAttempts >= 3) { triggerSecurityLockdown(); } 
+            else { msgEl.innerHTML = `<span class="text-red-500 font-bold glitch-text">ACCESS DENIED. ${3 - failedAttempts} ATTEMPTS REMAINING.</span>`; }
+        }
+    }
+
+    function triggerSecurityLockdown() {
+        let inputEl = document.getElementById('auth-input'), btnEl = document.getElementById('auth-btn'), msgEl = document.getElementById('auth-message'), iconEl = document.getElementById('lock-icon');
+        inputEl.disabled = true; btnEl.disabled = true; iconEl.innerText = "🚨";
+        
+        let timeLeft = baseCooldown * Math.pow(2, failedAttempts - 3); 
+        let lockInterval = setInterval(() => {
+            msgEl.innerHTML = `<span class="text-red-500 font-bold bg-red-900/30 px-4 py-1 rounded">SYSTEM LOCKED. COOLDOWN: ${timeLeft}s</span>`;
+            timeLeft--;
+            if (timeLeft < 0) {
+                clearInterval(lockInterval);
+                inputEl.disabled = false; btnEl.disabled = false; iconEl.innerText = "🔒";
+                msgEl.innerHTML = '<span class="text-amber-400">SYSTEM READY. PLEASE RETRY.</span>';
+                inputEl.focus();
+            }
+        }, 1000);
+    }
+
+    // --- VIEW CONTROLLER ---
+    function switchView(viewName) {
+        ['view-landing', 'view-auth', 'view-dashboard', 'view-scouting', 'view-detail'].forEach(v => document.getElementById(v).classList.add('hidden'));
+        document.getElementById(`view-${viewName}`).classList.remove('hidden');
+        if(viewName === 'auth') setTimeout(() => document.getElementById('auth-input').focus(), 100);
+        if(viewName === 'scouting' && document.getElementById('compound-rooms').innerHTML === '') renderInputs(); 
+    }
+
+    // --- FIREBASE LOGIC & DASHBOARD ---
+    const primaryValues = { 'Tequila': { Normal: 630000, Hard: 693000 }, 'Ruby Necklace': { Normal: 700000, Hard: 770000 }, 'Bearer Bonds': { Normal: 770000, Hard: 847000 }, 'Pink Diamond': { Normal: 1300000, Hard: 1430000 }, 'Black Panther': { Normal: 1900000, Hard: 2090000 } };
+    const compoundRooms = ['Base', 'North', 'West', 'South'];
+    const outsideLocs = ['Main Dock', 'Airstrip'];
+
+    let globalOperations = {}; 
+    let currentViewingId = null;
+    let currentEditingId = null;
+
+    dbRef.on('value', (snapshot) => {
+        globalOperations = snapshot.val() || {};
+        renderDashboard();
+        if(currentViewingId && !globalOperations[currentViewingId] && !document.getElementById('view-detail').classList.contains('hidden')) {
+            alert("⚠️ แผนการนี้ถูกยกเลิก/ลบโดยสมาชิกในทีมแล้ว"); switchView('dashboard');
+        }
+    });
+
+    // Refresh Dashboard Cooldowns every 30 seconds
+    setInterval(() => { if(!document.getElementById('view-dashboard').classList.contains('hidden')) renderDashboard(); }, 30000);
+
+    function renderDashboard() {
+        let activeHtml = '', archiveHtml = '', now = Date.now();
+        let ops = Object.keys(globalOperations).map(key => ({ id: key, ...globalOperations[key] }));
+        ops.sort((a, b) => b.timestamp - a.timestamp);
+
+        ops.forEach(op => {
+            if (op.status === 'pending') {
+                activeHtml += `
+                    <tr>
+                        <td class="text-xs text-gray-400">${new Date(op.timestamp).toLocaleString('th-TH', {dateStyle:'short', timeStyle:'short'})}</td>
+                        <td class="font-bold text-white">${op.host}</td>
+                        <td>${op.players}</td>
+                        <td class="text-amber-300">${op.primary}</td>
+                        <td class="text-emerald-400 font-bold">$${(op.netPayout || 0).toLocaleString()}</td>
+                        <td><span class="status-badge status-pending">PENDING</span></td>
+                        <td>
+                            <div class="flex justify-center gap-2">
+                                <button class="btn-cyber !text-[10px] !py-1 !px-2" onclick="viewOperationDetail('${op.id}')">VIEW</button>
+                                <button class="btn-cyber !text-[10px] !py-1 !px-2 !border-red-500 !text-red-500 hover:!bg-red-500 hover:!text-black" onclick="promptDelete('${op.id}')">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>`;
+            } else {
+                let compTime = op.completedAt || op.timestamp;
+                let cooldownMins = op.players === 1 ? 144 : 48;
+                let nextTime = compTime + (cooldownMins * 60000);
+                
+                let nextBadge = (now >= nextTime) 
+                    ? `<span class="text-emerald-400 font-bold">✅ READY</span>` 
+                    : `<span class="text-amber-400 font-bold animate-pulse">⏳ ${new Date(nextTime).toLocaleString('th-TH', { month:'short', day:'numeric', hour: '2-digit', minute:'2-digit' })} น.</span>`;
+
+                archiveHtml += `
+                    <tr>
+                        <td class="text-xs text-gray-400">${new Date(compTime).toLocaleString('th-TH', {dateStyle:'short', timeStyle:'short'})}</td>
+                        <td class="text-xs">${nextBadge}</td>
+                        <td class="font-bold text-white">${op.host}</td>
+                        <td>${op.players}</td>
+                        <td class="text-amber-300">${op.primary}</td>
+                        <td class="text-emerald-400 font-bold">$${(op.netPayout || 0).toLocaleString()}</td>
+                        <td>
+                            <div class="flex justify-center gap-2">
+                                <button class="btn-cyber !text-[10px] !py-1 !px-2" onclick="viewOperationDetail('${op.id}')">VIEW</button>
+                                <button class="btn-cyber !text-[10px] !py-1 !px-2 !border-red-500 !text-red-500 hover:!bg-red-500 hover:!text-black" onclick="promptDelete('${op.id}')">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>`;
+            }
+        });
+
+        document.getElementById('dash-active-body').innerHTML = activeHtml || '<tr><td colspan="7" class="text-gray-500 py-4">-- NO ACTIVE OPERATIONS --</td></tr>';
+        document.getElementById('dash-archive-body').innerHTML = archiveHtml || '<tr><td colspan="7" class="text-gray-500 py-4">-- NO RECORDS FOUND --</td></tr>';
+    }
+
+    // --- MODAL DELETE LOGIC ---
+    let pendingDeleteId = null;
+    let isDetailDelete = false;
+
+    function promptDelete(opId, fromDetail = false) {
+        pendingDeleteId = opId;
+        isDetailDelete = fromDetail;
+        document.getElementById('modal-delete').classList.remove('hidden');
+    }
+
+    function closeDeleteModal() {
+        pendingDeleteId = null;
+        document.getElementById('modal-delete').classList.add('hidden');
+    }
+
+    function executeDelete() {
+        if (pendingDeleteId) {
+            dbRef.child(pendingDeleteId).remove().then(() => {
+                closeDeleteModal();
+                if(isDetailDelete) switchView('dashboard');
+            });
+        }
+    }
+
+    // --- SCOUTING FUNCTIONS ---
+    function startNewScouting() { 
+        currentEditingId = null;
+        document.getElementById('scouting-title').innerText = '[ 👁️ LIVE SCOUTING MODE ]';
+        document.getElementById('btn-broadcast').innerText = '📡 BROADCAST TACTICAL PLAN';
+        switchView('scouting'); resetScoutingForm(); 
+    }
+
+    function editOperation(opId) {
+        currentEditingId = opId;
+        let op = globalOperations[opId];
+        document.getElementById('host').value = op.host;
+        document.getElementById('players').value = op.players;
+        document.getElementById('route-mode').value = op.routeMode;
+        document.getElementById('mode').value = op.mode;
+        document.getElementById('primary').value = op.primary;
+
+        compoundRooms.forEach(r => {
+            document.getElementById(`in-gold-${r}`).value = op.compound[r]?.gold || 0;
+            document.getElementById(`in-paint-${r}`).value = op.compound[r]?.paint || 0;
+            document.getElementById(`in-cash-${r}`).value = op.compound[r]?.cash || 0;
+        });
+        outsideLocs.forEach(l => {
+            document.getElementById(`out-coke-${l}`).value = op.outside[l]?.coke || 0;
+            document.getElementById(`out-weed-${l}`).value = op.outside[l]?.weed || 0;
+            document.getElementById(`out-cash-${l}`).value = op.outside[l]?.cash || 0;
+        });
+
+        document.getElementById('scouting-title').innerText = '[ ✏️ EDIT SCOUTING MODE ]';
+        document.getElementById('btn-broadcast').innerText = '💾 UPDATE TACTICAL PLAN';
+        switchView('scouting'); updateLiveStats();
+    }
+
+    function resetScoutingForm() {
+        compoundRooms.forEach(r => { document.getElementById(`in-gold-${r}`).value=0; document.getElementById(`in-paint-${r}`).value=0; document.getElementById(`in-cash-${r}`).value=0; });
+        outsideLocs.forEach(l => { document.getElementById(`out-coke-${l}`).value=0; document.getElementById(`out-weed-${l}`).value=0; document.getElementById(`out-cash-${l}`).value=0; });
+        updateLiveStats();
+    }
+
+    function renderInputs() {
+        if(document.getElementById('compound-rooms').innerHTML !== '') return;
+        let compHTML = '<div class="grid grid-cols-4 gap-2 text-xs text-emerald-500 text-center font-bold"><span>Room</span><span>🪙 Gold</span><span>🖼️ Paint</span><span>💵 Cash</span></div>';
+        compoundRooms.forEach(room => {
+            let maxPaint = (room === 'Base') ? 4 : 1;
+            compHTML += `<div class="grid grid-cols-4 gap-2 items-center"><div><span class="font-bold text-sm block">${room}</span><span id="label-${room}" class="text-[10px] text-emerald-400 block">(Tables: 0/2 | Paint: 0/${maxPaint})</span></div><input type="number" min="0" max="2" value="0" id="in-gold-${room}" class="cyber-input text-center" oninput="handleCompoundInput('${room}')"><input type="number" min="0" max="${maxPaint}" value="0" id="in-paint-${room}" class="cyber-input text-center" oninput="updateLiveStats()"><input type="number" min="0" max="2" value="0" id="in-cash-${room}" class="cyber-input text-center" oninput="handleCompoundInput('${room}')"></div>`;
+        });
+        document.getElementById('compound-rooms').innerHTML = compHTML;
+
+        let outHTML = '';
+        outsideLocs.forEach(loc => {
+            let maxPiles = (loc === 'Main Dock') ? 7 : 6;
+            let locIcon = (loc === 'Main Dock') ? '⚓' : '🛬';
+            outHTML += `<div class="border border-emerald-900 p-3 rounded bg-black/20 mb-3"><div class="flex justify-between items-center mb-2"><div><span class="font-bold text-sm text-emerald-300">${locIcon} ${loc}</span><span id="label-${loc}" class="text-xs text-emerald-400 block">(0/${maxPiles} piles)</span></div><div class="text-xs text-emerald-300 flex items-center gap-2"><span id="load-text-${loc}">LOAD: 0%</span><div class="cyber-progress-bar"><div id="load-bar-${loc}" class="progress-fill"></div></div></div></div><div class="grid grid-cols-3 gap-2 text-xs text-emerald-500 text-center font-bold mb-1"><span>❄️ Cocaine</span><span>🌿 Weed</span><span>💵 Cash</span></div><div class="grid grid-cols-3 gap-2"><input type="number" min="0" max="${maxPiles}" value="0" id="out-coke-${loc}" class="cyber-input text-center" oninput="handleOutsideInput('${loc}')"><input type="number" min="0" max="${maxPiles}" value="0" id="out-weed-${loc}" class="cyber-input text-center" oninput="handleOutsideInput('${loc}')"><input type="number" min="0" max="${maxPiles}" value="0" id="out-cash-${loc}" class="cyber-input text-center" oninput="handleOutsideInput('${loc}')"></div></div>`;
+        });
+        document.getElementById('outside-rooms').innerHTML = outHTML;
+    }
+
+    function handleCompoundInput(room) {
+        let goldEl = document.getElementById(`in-gold-${room}`), cashEl = document.getElementById(`in-cash-${room}`);
+        let gold = parseInt(goldEl.value) || 0, cash = parseInt(cashEl.value) || 0;
+        if (gold + cash > 2) { document.activeElement === goldEl ? (goldEl.value = 2 - cash) : (cashEl.value = 2 - gold); }
+        updateLiveStats();
+    }
+
+    function handleOutsideInput(loc) {
+        let maxPiles = (loc === 'Main Dock') ? 7 : 6;
+        let cEl = document.getElementById(`out-coke-${loc}`), wEl = document.getElementById(`out-weed-${loc}`), caEl = document.getElementById(`out-cash-${loc}`);
+        let c = parseInt(cEl.value)||0, w = parseInt(wEl.value)||0, ca = parseInt(caEl.value)||0;
+        if (c+w+ca > maxPiles) {
+            let a = document.activeElement;
+            if (a === cEl) cEl.value = Math.max(0, maxPiles - (w+ca)); else if (a === wEl) wEl.value = Math.max(0, maxPiles - (c+ca)); else caEl.value = Math.max(0, maxPiles - (c+w));
+        }
+        updateLiveStats();
+    }
+
+    function updateLiveStats() {
+        let players = parseInt(document.getElementById('players').value || 3);
+        let maxBagSpace = players * 100.0, insideSpace = 0;
+        compoundRooms.forEach(room => {
+            let g = parseFloat(document.getElementById(`in-gold-${room}`)?.value || 0), p = parseFloat(document.getElementById(`in-paint-${room}`)?.value || 0), c = parseFloat(document.getElementById(`in-cash-${room}`)?.value || 0);
+            insideSpace += (g * 66.6667) + (p * 50.0) + (c * 25.0);
+            document.getElementById(`label-${room}`).innerHTML = `(Tables: ${g+c}/2 | Paint: ${p}/${room==='Base'?4:1})`;
+        });
+        let outsideSpaceTotal = 0;
+        outsideLocs.forEach(loc => {
+            let c = parseFloat(document.getElementById(`out-coke-${loc}`)?.value || 0), w = parseFloat(document.getElementById(`out-weed-${loc}`)?.value || 0), ca = parseFloat(document.getElementById(`out-cash-${loc}`)?.value || 0);
+            let space = (c * 50.0) + (w * 37.5) + (ca * 25.0); outsideSpaceTotal += space;
+            document.getElementById(`label-${loc}`).innerHTML = `(${c+w+ca}/${loc==='Main Dock'?7:6} piles)`;
+            document.getElementById(`load-text-${loc}`).innerText = `LOAD: ${Math.round(space)}%`;
+            document.getElementById(`load-bar-${loc}`).style.width = Math.min(Math.round(space), 100) + '%';
+        });
+
+        let totSpace = insideSpace + outsideSpaceTotal;
+        document.getElementById('rec-inside-players').innerText = `${[1,2,3,4].find(x=>x*100>insideSpace)||4} คน (แนะนำ)`;
+        document.getElementById('rec-inside-load').innerText = `(${Math.round(insideSpace)}%)`;
+        document.getElementById('rec-total-players').innerText = `${[1,2,3,4].find(x=>x*100>totSpace)||4} คน (แนะนำ)`;
+        document.getElementById('rec-total-load').innerText = `(${Math.round(totSpace)}%)`;
+
+        document.getElementById('inside-badge').innerHTML = maxBagSpace - insideSpace > 0 ? `<span class="text-amber-400 font-bold">[DEFICIT: -${Math.round(maxBagSpace - insideSpace)}%]</span>` : `<span class="text-emerald-400 font-bold">[SURPLUS: +${Math.round(insideSpace - maxBagSpace)}%]</span>`;
+        document.getElementById('inside-stat-text').innerText = `LOAD: ${Math.round(insideSpace)}% / ${Math.round(maxBagSpace)}%`;
+        document.getElementById('inside-bar').style.width = Math.min(Math.round((insideSpace / maxBagSpace) * 100), 100) + '%';
+    }
+
+    function broadcastPlan() {
+        let payload = {
+            host: document.getElementById('host').value, players: parseInt(document.getElementById('players').value),
+            routeMode: document.getElementById('route-mode').value, mode: document.getElementById('mode').value, primary: document.getElementById('primary').value,
+            compound: {}, outside: {}
+        };
+        compoundRooms.forEach(r => payload.compound[r] = { gold: parseInt(document.getElementById(`in-gold-${r}`).value)||0, paint: parseInt(document.getElementById(`in-paint-${r}`).value)||0, cash: parseInt(document.getElementById(`in-cash-${r}`).value)||0 });
+        outsideLocs.forEach(l => payload.outside[l] = { coke: parseInt(document.getElementById(`out-coke-${l}`).value)||0, weed: parseInt(document.getElementById(`out-weed-${l}`).value)||0, cash: parseInt(document.getElementById(`out-cash-${l}`).value)||0 });
+
+        let calcRes = generateBriefingHTML(payload);
+        payload.netPayout = calcRes.net;
+
+        if (currentEditingId) {
+            dbRef.child(currentEditingId).update(payload).then(() => { alert("✅ TACTICAL PLAN UPDATED!"); currentEditingId = null; switchView('dashboard'); });
+        } else {
+            payload.timestamp = Date.now(); payload.status = 'pending';
+            dbRef.push(payload).then(() => { switchView('dashboard'); });
+        }
+    }
+
+    function generateBriefingHTML(data) {
+        let players = data.players, routeMode = data.routeMode, totalBagCapacity = players * 100.0, insideItems = [], insideTotalSpace = 0, compIntel = [], outIntel = [];
+        
+        for (let r of compoundRooms) {
+            let d = data.compound[r], rItems=[];
+            if (d.gold>0) rItems.push(`🪙 Gold x${d.gold}`); if (d.paint>0) rItems.push(`🖼️ Paint x${d.paint}`); if (d.cash>0) rItems.push(`💵 Cash x${d.cash}`);
+            if (rItems.length>0) compIntel.push(`<span class="text-amber-300 font-bold">🏰 ${r}:</span> ${rItems.join(' | ')}`);
+        }
+        for (let l of outsideLocs) {
+            let d = data.outside[l], lItems=[], icon = l==='Main Dock'?'⚓':'🛬';
+            if (d.coke>0) lItems.push(`❄️ Cocaine x${d.coke}`); if (d.weed>0) lItems.push(`🌿 Weed x${d.weed}`); if (d.cash>0) lItems.push(`💵 Cash x${d.cash}`);
+            if (lItems.length>0) outIntel.push(`<span class="text-amber-300 font-bold">${icon} ${l}:</span> ${lItems.join(' | ')}`);
+        }
+        let summaryHtml = `<div><h4 class="text-emerald-500 font-bold mb-2">🏰 INSIDE THE COMPOUND</h4><ul class="text-sm text-white space-y-1">${compIntel.map(i=>`<li>${i}</li>`).join('') || '<li class="text-gray-500">- No loot selected -</li>'}</ul></div><div><h4 class="text-emerald-500 font-bold mb-2">🏝️ PERIMETER (OUTSIDE)</h4><ul class="text-sm text-white space-y-1">${outIntel.map(i=>`<li>${i}</li>`).join('') || '<li class="text-gray-500">- No loot selected -</li>'}</ul></div>`;
+
+        for (let room of compoundRooms) {
+            let cData = data.compound[room];
+            for (let i = 0; i < cData.gold; i++) { insideItems.push({ type: 'Gold', emoji: '🪙', weight: 66.6667, val: 331000, loc: room, rank: 1, discrete: false }); insideTotalSpace += 66.6667; }
+            for (let i = 0; i < cData.paint; i++) { insideItems.push({ type: 'Paint', emoji: '🖼️', weight: 50.0, val: 175000, loc: room, rank: 4, discrete: true }); insideTotalSpace += 50.0; }
+            for (let i = 0; i < cData.cash; i++) { insideItems.push({ type: 'Cash', emoji: '💵', weight: 25.0, val: 81000, loc: room, rank: 5, discrete: false }); insideTotalSpace += 25.0; }
+        }
+
+        let missingSpace = Math.max(0, totalBagCapacity - insideTotalSpace), isKosatka = true, chosenOutsideLocations = [], approachText = "", stubbornNote = "";
+
+        if (routeMode === 'kosatka') { approachText = "🛥️ Kosatka (เรือดำน้ำ) -> ลุยท่อระบายน้ำ (Drainage Tunnel) เข้าสู่ 🏰 El Rubio's Mansion ทันที"; } 
+        else if (routeMode === 'longfin') { isKosatka = false; stubbornNote = "⚠️ [STUBBORN OVERRIDE] คุณเลือก Longfin ระบบบังคับแวะเก็บนอกบ้านตามสั่ง!"; } 
+        else { if (missingSpace <= 0) { approachText = "🛥️ Kosatka (เรือดำน้ำ) -> ลุยท่อระบายน้ำ (Drainage Tunnel) เข้าสู่ 🏰 El Rubio's Mansion ทันที (ของในบ้านเพียงพอ)"; } else { isKosatka = false; } }
+
+        let dockItems = [], dockCapacity = 0, dockVal = 0, stripItems = [], stripCapacity = 0, stripVal = 0;
+        let oD = data.outside['Main Dock'];
+        for(let i=0; i<oD.coke; i++) { dockItems.push({ type: 'Cocaine', emoji: '❄️', weight: 50.0, val: 200000, loc: 'Main Dock', rank: 2, discrete: false }); dockCapacity += 50; dockVal += 200000; }
+        for(let i=0; i<oD.weed; i++) { dockItems.push({ type: 'Weed', emoji: '🌿', weight: 37.5, val: 135000, loc: 'Main Dock', rank: 3, discrete: false }); dockCapacity += 37.5; dockVal += 135000; }
+        for(let i=0; i<oD.cash; i++) { dockItems.push({ type: 'Cash', emoji: '💵', weight: 25.0, val: 81000, loc: 'Main Dock', rank: 5, discrete: false }); dockCapacity += 25; dockVal += 81000; }
+        
+        let oS = data.outside['Airstrip'];
+        for(let i=0; i<oS.coke; i++) { stripItems.push({ type: 'Cocaine', emoji: '❄️', weight: 50.0, val: 200000, loc: 'Airstrip', rank: 2, discrete: false }); stripCapacity += 50; stripVal += 200000; }
+        for(let i=0; i<oS.weed; i++) { stripItems.push({ type: 'Weed', emoji: '🌿', weight: 37.5, val: 135000, loc: 'Airstrip', rank: 3, discrete: false }); stripCapacity += 37.5; stripVal += 135000; }
+        for(let i=0; i<oS.cash; i++) { stripItems.push({ type: 'Cash', emoji: '💵', weight: 25.0, val: 81000, loc: 'Airstrip', rank: 5, discrete: false }); stripCapacity += 25; stripVal += 81000; }
+
+        let pool = [...insideItems];
+
+        if (!isKosatka) {
+            let dockCanCover = dockCapacity >= missingSpace - 0.1, stripCanCover = stripCapacity >= missingSpace - 0.1;
+            if (routeMode === 'longfin' && missingSpace <= 0) {
+                if (dockVal >= stripVal && dockCapacity > 0) { chosenOutsideLocations.push('Main Dock'); pool.push(...dockItems); } else if (stripCapacity > 0) { chosenOutsideLocations.push('Airstrip'); pool.push(...stripItems); }
+            } else if (dockCanCover && stripCanCover) {
+                if (dockVal >= stripVal) { chosenOutsideLocations.push('Main Dock'); pool.push(...dockItems); } else { chosenOutsideLocations.push('Airstrip'); pool.push(...stripItems); }
+            } else if (dockCanCover) { chosenOutsideLocations.push('Main Dock'); pool.push(...dockItems);
+            } else if (stripCanCover) { chosenOutsideLocations.push('Airstrip'); pool.push(...stripItems);
+            } else { chosenOutsideLocations.push('Airstrip', 'Main Dock'); pool.push(...stripItems, ...dockItems); }
+
+            if (chosenOutsideLocations.includes('Airstrip') && chosenOutsideLocations.includes('Main Dock')) chosenOutsideLocations = ['Airstrip', 'Main Dock'];
+            let formattedStops = chosenOutsideLocations.map(loc => `<span class="text-amber-300 font-bold">${loc === 'Main Dock' ? '⚓ Main Dock' : '🛬 Airstrip'}</span>`).join(' ➔ ');
+            approachText = `🛥️ Longfin (เรือเร็ว) -> แวะตามลำดับยุทธวิธี: ${formattedStops} -> ขี่เรือเดินทางต่อมาที่ท่อระบายน้ำ (<span class="text-white">Drainage Tunnel</span>) เพื่อเข้าสู่ <span class="text-emerald-300">🏰 El Rubio's Mansion</span>`;
+        }
+
+        pool.sort((a, b) => (a.rank !== b.rank) ? a.rank - b.rank : (b.val / b.weight) - (a.val / a.weight));
+        let playerBags = Array.from({length: players}, () => ({ space: 0, items: [] }));
+
+        for (let bag of playerBags) {
+            while (bag.space < 99.9 && pool.length > 0) {
+                let bagSpaceLeft = 100.0 - bag.space, bestIdx = -1;
+                for (let i = 0; i < pool.length; i++) if (pool[i].discrete && pool[i].weight <= bagSpaceLeft + 0.01) { bestIdx = i; break; }
+                if (bestIdx === -1) for (let i = 0; i < pool.length; i++) if (!pool[i].discrete && pool[i].weight > 0) { bestIdx = i; break; }
+                if (bestIdx === -1) for (let i = 0; i < pool.length; i++) if (pool[i].weight <= bagSpaceLeft + 0.01) { bestIdx = i; break; }
+                if (bestIdx === -1) break;
+                let item = pool[bestIdx]; let takeWeight = item.discrete ? item.weight : Math.min(item.weight, bagSpaceLeft); let takeVal = takeWeight * (item.val / item.weight);
+                bag.space += takeWeight; bag.items.push({ type: item.type, emoji: item.emoji, weight: takeWeight, val: takeVal, loc: item.loc });
+                if (!item.discrete) { item.weight -= takeWeight; item.val -= takeVal; if (item.weight <= 0.01) pool.splice(bestIdx, 1); } else { pool.splice(bestIdx, 1); }
+            }
+        }
+
+        let totalSecondaryVal = 0, taskHtml = stubbornNote ? `<div class="mb-3 text-amber-400 font-bold">${stubbornNote}</div>` : '';
+        taskHtml += `<div class="mb-3 text-emerald-400 font-bold">> STRATEGY & JOURNEY: <span class="text-white">${approachText}</span></div>`;
+
+        playerBags.forEach((bag, idx) => {
+            let locGroups = {}; bag.items.forEach(it => { if (!locGroups[it.loc]) locGroups[it.loc] = []; locGroups[it.loc].push(it); });
+            let sortedLocKeys = Object.keys(locGroups).sort((a, b) => ({'Airstrip':1,'Main Dock':2,'Base':3,'North':4,'West':5,'South':6}[a]||99) - ({'Airstrip':1,'Main Dock':2,'Base':3,'North':4,'West':5,'South':6}[b]||99));
+            let briefingTags = [], headerIcons = "", hasAirstrip = false, hasDock = false, hasMansion = false;
+            sortedLocKeys.forEach(loc => {
+                let itemsInLoc = locGroups[loc], tagHtml = "";
+                if (loc === 'Airstrip') { tagHtml = `<span class="tactical-badge badge-airstrip">🛬 Airstrip</span>`; hasAirstrip = true; } 
+                else if (loc === 'Main Dock') { tagHtml = `<span class="tactical-badge badge-dock">⚓ Main Dock</span>`; hasDock = true; } 
+                else { tagHtml = `<span class="tactical-badge badge-mansion">🏰 (${loc})</span>`; hasMansion = true; }
+
+                let subDesc = itemsInLoc.map(it => {
+                    let qtyStr = "";
+                    if (it.type === 'Paint') qtyStr = Math.round(it.weight / 50.0) + " ภาพ";
+                    else { let p = it.weight / (it.type==='Gold'?66.6667:it.type==='Cocaine'?50.0:it.type==='Weed'?37.5:25.0); qtyStr = (Math.abs(p - Math.round(p)) < 0.05) ? Math.round(p) + " กอง" : p.toFixed(2) + " กอง"; }
+                    return `${it.emoji} ${it.type} ${qtyStr}`;
+                }).join(', ');
+                briefingTags.push(`${tagHtml} ${subDesc}`); itemsInLoc.forEach(it => totalSecondaryVal += it.val);
+            });
+            if (hasAirstrip) headerIcons += '🛬'; if (hasDock) headerIcons += '⚓'; if (hasMansion || headerIcons === '') headerIcons += '🏰';
+            let bagDisplayPct = Math.min(Math.round(bag.space), 100);
+            let bagColorClass = bagDisplayPct >= 100 ? "text-amber-300" : "text-red-400 font-bold animate-pulse";
+            taskHtml += `<div class="cyber-panel p-3 mb-3 bg-black/40"><div class="text-emerald-300 font-bold flex justify-between items-center"><span>PLAYER ${idx + 1} TASK: <span class="text-lg ml-1">${headerIcons}</span></span><span class="text-xs ${bagColorClass}">👜 กระเป๋าบรรจุ: ${bagDisplayPct}%</span></div><div class="text-white text-sm mt-2"><div>📍 จุดปฏิบัติการ: ${briefingTags.join(' &nbsp;|&nbsp; ') || '<span class="text-gray-500">Standby Support</span>'}</div></div></div>`;
+        });
+
+        let primaryVal = primaryValues[data.primary][data.mode], gross = primaryVal + totalSecondaryVal, net = gross * 0.88;
+        let finHtml = `<div class="text-lg font-bold text-amber-400 mb-2">:: FINANCIAL BREAKDOWN</div><div>Primary: <span class="text-white">$${primaryVal.toLocaleString()}</span></div><div>Secondary Loot: <span class="text-white">$${Math.round(totalSecondaryVal).toLocaleString()}</span></div><div>Gross Total: <span class="text-white">$${Math.round(gross).toLocaleString()}</span></div><div class="text-red-400 border-b border-emerald-900 pb-2 mb-2">Fencing/Pavel (-12%): -$${Math.round(gross * 0.12).toLocaleString()}</div><div class="text-lg text-emerald-300 font-bold">NET PAYOUT: <span class="text-white">$${Math.round(net).toLocaleString()}</span></div><br>`;
+        if (players === 1) finHtml += `> Solo (100%): <span class="text-white">$${Math.round(net).toLocaleString()}</span>`;
+        else if (players === 2) finHtml += `> Host (50%): <span class="text-white">$${Math.round(net * 0.5).toLocaleString()}</span><br>> Crew 1 (50%): <span class="text-white">$${Math.round(net * 0.5).toLocaleString()}</span>`;
+        else if (players === 3) finHtml += `> Host (40%): <span class="text-white">$${Math.round(net * 0.4).toLocaleString()}</span><br>> Crew 1 (30%): <span class="text-white">$${Math.round(net * 0.3).toLocaleString()}</span><br>> Crew 2 (30%): <span class="text-white">$${Math.round(net * 0.3).toLocaleString()}</span>`;
+        else finHtml += `> Host (40%): <span class="text-white">$${Math.round(net * 0.4).toLocaleString()}</span><br>> Crew (20% each): <span class="text-white">$${Math.round(net * 0.2).toLocaleString()}</span>`;
+
+        return { summaryHtml, taskHtml, finHtml, net };
+    }
+
+    function viewOperationDetail(opId) {
+        currentViewingId = opId; let opData = globalOperations[opId], results = generateBriefingHTML(opData);
+        document.getElementById('detail-op-id').innerText = `OPERATION ID: -Op${opId.substring(1, 10)}... | HOST: ${opData.host} | CREW: ${opData.players} PLAYERS`;
+        document.getElementById('detail-intel-summary').innerHTML = results.summaryHtml;
+        document.getElementById('detail-task-assignment').innerHTML = results.taskHtml;
+        document.getElementById('detail-financial-details').innerHTML = results.finHtml;
+        
+        let actionPanel = document.getElementById('detail-action-panel');
+        if (opData.status === 'pending') {
+            actionPanel.classList.remove('hidden');
+            document.getElementById('btn-edit-op').onclick = () => editOperation(opId);
+            document.getElementById('btn-complete-op').onclick = () => completeOperation(opId);
+        } else { actionPanel.classList.add('hidden'); }
+        switchView('detail');
+    }
+
+    function completeOperation(opId) {
+        dbRef.child(opId).update({ status: 'completed', completedAt: Date.now() }).then(() => {
+            alert("✅ ปฏิบัติการสำเร็จ! เริ่มนับเวลา Cooldown แล้ว"); switchView('dashboard');
+        });
+    }
+
+    window.onload = renderInputs;
+</script>
+</body>
+</html>
