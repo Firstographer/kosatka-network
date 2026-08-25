@@ -41,6 +41,51 @@
         @keyframes glitch { 0% { transform: translate(0) } 20% { transform: translate(-2px, 1px) } 40% { transform: translate(-1px, -1px) } 60% { transform: translate(2px, 1px) } 80% { transform: translate(1px, -1px) } 100% { transform: translate(0) } }
         /* Backdrop Blur for modals */
         .backdrop-blur-sm { backdrop-filter: blur(4px); }
+
+        /* ================= HUD DASHBOARD ================= */
+        .hud-frame { position: relative; --hc: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.35); background: linear-gradient(180deg, rgba(245,158,11,0.04), rgba(3,7,18,0)); }
+        .hud-frame.hud-green { --hc: #34d399; border-color: rgba(16, 185, 129, 0.35); background: linear-gradient(180deg, rgba(16,185,129,0.03), rgba(3,7,18,0)); }
+        .hud-frame::before {
+            content: ''; position: absolute; inset: -1px; pointer-events: none;
+            background:
+                linear-gradient(var(--hc), var(--hc)) 0 0 / 2px 18px no-repeat,
+                linear-gradient(var(--hc), var(--hc)) 0 0 / 18px 2px no-repeat,
+                linear-gradient(var(--hc), var(--hc)) 100% 0 / 2px 18px no-repeat,
+                linear-gradient(var(--hc), var(--hc)) 100% 0 / 18px 2px no-repeat,
+                linear-gradient(var(--hc), var(--hc)) 0 100% / 2px 18px no-repeat,
+                linear-gradient(var(--hc), var(--hc)) 0 100% / 18px 2px no-repeat,
+                linear-gradient(var(--hc), var(--hc)) 100% 100% / 2px 18px no-repeat,
+                linear-gradient(var(--hc), var(--hc)) 100% 100% / 18px 2px no-repeat;
+        }
+        .hud-label { position: relative; display: inline-block; padding: 0 7px; font-size: 0.68rem; letter-spacing: 0.18em; color: #34d399; text-transform: uppercase; }
+        .hud-label.amber { color: #fbbf24; }
+        .hud-label::before, .hud-label::after { content: ''; position: absolute; top: -3px; width: 5px; height: 9px; border-top: 1px solid currentColor; }
+        .hud-label::before { left: 0; border-left: 1px solid currentColor; }
+        .hud-label::after { right: 0; border-right: 1px solid currentColor; }
+        .btn-ghost { background: rgba(6, 78, 59, 0.25); }
+        .pill-ready { display: inline-flex; align-items: center; gap: 6px; border: 1px solid #34d399; color: #34d399; border-radius: 999px; padding: 2px 12px; font-size: 0.7rem; letter-spacing: 0.15em; background: rgba(16,185,129,0.08); }
+        .pill-ready .dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; box-shadow: 0 0 6px #34d399; animation: pulse 2s infinite; }
+        .target-art { position: relative; height: 235px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid rgba(6, 95, 70, 0.7); background: radial-gradient(ellipse at center, rgba(16,185,129,0.16), rgba(3,7,18,0.95) 72%); }
+        .target-art .glyph { position: relative; z-index: 3; font-size: 5.5rem; line-height: 1; filter: drop-shadow(0 0 20px rgba(52,211,153,0.55)) saturate(0.65) contrast(1.1); }
+        .target-art .art-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; filter: saturate(0.78) contrast(1.05) brightness(0.97); }
+        .target-art::before { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(ellipse at center, rgba(16,185,129,0.12), rgba(3,7,18,0.6) 78%); }
+        .target-art::after { content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none; background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.32) 3px, rgba(0,0,0,0.32) 4px); }
+        /* Asset slots: <img> first, inline fallback revealed by assetFail() if the file is missing */
+        .asset-slot { display: inline-flex; align-items: center; justify-content: center; }
+        .loot-icon { width: 40px; height: 40px; object-fit: contain; }
+        .vessel-img { width: 176px; max-height: 76px; object-fit: contain; }
+        .entry-icon-img { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; }
+        .loc-chip { display: inline-block; border: 1px solid #10b981; background: rgba(16,185,129,0.12); color: #6ee7b7; padding: 3px 11px; font-size: 0.7rem; letter-spacing: 0.12em; white-space: nowrap; }
+        .hud-action { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; padding: 12px 8px; border: 1px solid #10b981; background: rgba(6,78,59,0.2); color: #6ee7b7; letter-spacing: 0.18em; font-size: 0.85rem; cursor: pointer; transition: 0.25s; text-transform: uppercase; }
+        .hud-action:hover { background: rgba(16,185,129,0.22); box-shadow: 0 0 14px rgba(52,211,153,0.25); color: #a7f3d0; }
+        .hud-action.danger { border-color: #ef4444; background: rgba(127,29,29,0.15); color: #f87171; }
+        .hud-action.danger:hover { background: rgba(239,68,68,0.2); box-shadow: 0 0 14px rgba(248,113,113,0.3); color: #fca5a5; }
+        .archive-table th { text-transform: uppercase; letter-spacing: 0.14em; font-size: 0.72rem; font-weight: normal; padding: 12px 8px; }
+        .archive-table td { padding: 12px 8px; }
+        .archive-row { cursor: pointer; }
+        .row-kill { opacity: 0; transition: 0.2s; border: 1px solid #7f1d1d; color: #f87171; padding: 1px 6px; font-size: 0.7rem; margin-left: 10px; }
+        .archive-row:hover .row-kill { opacity: 1; }
+        .row-kill:hover { background: #ef4444; color: #000; }
     </style>
 </head>
 <body class="p-4 md:p-8">
@@ -73,28 +118,24 @@
 
 <!-- VIEW: DASHBOARD -->
 <div id="view-dashboard" class="max-w-7xl mx-auto hidden fade-in">
-    <div class="flex flex-wrap justify-between items-center mb-8 border-b border-emerald-800 pb-4">
-        <h1 class="text-3xl font-bold text-neon tracking-wider">[ TACTICAL DASHBOARD ]</h1>
-        <button class="btn-cyber" onclick="startNewScouting()">➕ INITIATE NEW SCOUTING</button>
+    <div class="mb-8 border-b border-emerald-900 pb-6">
+        <h1 class="text-3xl md:text-4xl font-bold text-neon tracking-[0.15em] mb-5">[ TACTICAL DASHBOARD ]</h1>
+        <button class="btn-cyber btn-ghost w-full sm:w-[420px] flex items-center gap-5 !py-3 !px-6" onclick="startNewScouting()">
+            <span class="text-xl leading-none">+</span><span>INITIATE NEW SCOUTING</span>
+        </button>
     </div>
 
-    <!-- Active Operations -->
-    <div class="cyber-panel p-6 mb-8 border-amber-500 bg-amber-950/10">
-        <h2 class="text-xl font-bold mb-4 text-amber-400">⚡ ACTIVE OPERATIONS (IN PROGRESS / PENDING)</h2>
-        <div class="overflow-x-auto">
-            <table>
-                <thead><tr><th>Time</th><th>Host</th><th>Crew</th><th>Target</th><th>Est. Value</th><th>Status</th><th>Actions</th></tr></thead>
-                <tbody id="dash-active-body"><tr><td colspan="7" class="text-gray-500">Connecting to secure server...</td></tr></tbody>
-            </table>
-        </div>
+    <!-- Active Operations (HUD CARDS) -->
+    <div id="dash-active-cards" class="space-y-8 mb-10">
+        <div class="hud-frame hud-green p-10 text-center text-emerald-800">Connecting to secure server...</div>
     </div>
 
     <!-- Archives -->
-    <div class="cyber-panel p-6">
-        <h2 class="text-xl font-bold mb-4 text-emerald-500">:: MISSION ARCHIVES (COMPLETED)</h2>
+    <div class="hud-frame hud-green p-6">
+        <h2 class="text-lg font-bold mb-5 text-emerald-500 tracking-[0.15em]">:: MISSION ARCHIVES (COMPLETED)</h2>
         <div class="overflow-x-auto">
-            <table>
-                <thead><tr><th>Completed Time</th><th>Next Setup</th><th>Host</th><th>Crew</th><th>Target</th><th>Net Payout</th><th>Actions</th></tr></thead>
+            <table class="archive-table">
+                <thead><tr><th>Completed Time</th><th>Next Setup</th><th>Host</th><th>Crew</th><th>Target</th><th>Net Payout</th></tr></thead>
                 <tbody id="dash-archive-body"></tbody>
             </table>
         </div>
@@ -266,6 +307,64 @@
     const compoundRooms = ['Base', 'North', 'West', 'South'];
     const outsideLocs = ['Main Dock', 'Airstrip'];
 
+    // --- HUD DISPLAY METADATA ---
+    // Every asset below is optional: if the file is missing the slot falls back to the
+    // emoji / inline SVG it shipped with, so the dashboard never renders a broken image.
+    // File names are fixed; the required dimensions live in assets/README.md.
+    const primaryMeta = {
+        'Tequila':       { name: 'SINSIMITO TEQUILA', glyph: '🍾', img: 'assets/targets/sinsimito-tequila.webp' },
+        'Ruby Necklace': { name: 'RUBY NECKLACE',     glyph: '📿', img: 'assets/targets/ruby-necklace.webp' },
+        'Bearer Bonds':  { name: 'BEARER BONDS',      glyph: '📜', img: 'assets/targets/bearer-bonds.webp' },
+        'Pink Diamond':  { name: 'PINK DIAMOND',      glyph: '💎', img: 'assets/targets/pink-diamond.webp' },
+        'Black Panther': { name: 'PANTHER STATUE',    glyph: '🐆', img: 'assets/targets/panther-statue.webp' }
+    };
+    const lootMeta = {
+        Gold:    { label: 'GOLD',    emoji: '🪙', color: 'text-amber-300',   img: 'assets/loot/gold.png' },
+        Cocaine: { label: 'COCAINE', emoji: '❄️', color: 'text-cyan-300',    img: 'assets/loot/cocaine.png' },
+        Weed:    { label: 'WEED',    emoji: '🌿', color: 'text-lime-300',    img: 'assets/loot/weed.png' },
+        Paint:   { label: 'PAINT',   emoji: '🖼️', color: 'text-fuchsia-300', img: 'assets/loot/painting.png' },
+        Cash:    { label: 'CASH',    emoji: '💵', color: 'text-emerald-300', img: 'assets/loot/cash.png' }
+    };
+    const approachMeta = {
+        kosatka: { name: 'KOSATKA', sub: 'Submarine', img: 'assets/approach/kosatka.png' },
+        longfin: { name: 'LONGFIN', sub: 'Speedboat', img: 'assets/approach/longfin.png' },
+        entry:   { img: 'assets/approach/drainage-tunnel.png' }
+    };
+    const ICON_SUB = `<svg viewBox="0 0 230 92" class="w-44 h-auto text-emerald-400" fill="currentColor" aria-hidden="true">
+            <rect x="38" y="40" width="160" height="32" rx="16"/>
+            <path d="M193 41 Q224 56 193 71 Z"/>
+            <rect x="96" y="18" width="44" height="26" rx="5"/>
+            <rect x="107" y="6" width="4" height="14"/><rect x="120" y="1" width="4" height="19"/>
+            <path d="M30 28 L52 44 L52 68 L30 84 Z"/>
+            <rect x="148" y="30" width="30" height="7" rx="3.5"/>
+        </svg>`;
+    const ICON_BOAT = `<svg viewBox="0 0 230 92" class="w-44 h-auto text-emerald-400" fill="currentColor" aria-hidden="true">
+            <path d="M22 56 L206 56 L176 80 L48 80 Z"/>
+            <rect x="78" y="30" width="64" height="26" rx="5"/>
+            <path d="M142 30 L176 56 L142 56 Z"/>
+            <rect x="96" y="12" width="4" height="18"/>
+        </svg>`;
+    const ICON_TUNNEL = `<svg viewBox="0 0 48 48" class="w-11 h-11 text-emerald-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="24" cy="24" r="21"/>
+            <g stroke-width="1.5" opacity="0.85">
+                <path d="M11 10.5v27M17.5 5.5v37M24 4v40M30.5 5.5v37M37 10.5v27"/>
+                <path d="M6 15h36M3.5 24h41M6 33h36"/>
+            </g>
+        </svg>`;
+    const ICON_FOLDER = `<svg viewBox="0 0 48 40" class="w-14 h-12 mx-auto mb-3 text-emerald-900" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M2 36V6a2 2 0 0 1 2-2h13l5 6h22a2 2 0 0 1 2 2v24a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2z"/>
+        </svg>`;
+
+    // Renders <img src>, swapping in the inline fallback markup if the file 404s.
+    function assetSlot(src, imgClass, fallbackHtml, alt = '') {
+        return `<span class="asset-slot"><img src="${src}" alt="${alt}" class="${imgClass}" onerror="assetFail(this)"><span class="asset-fb hidden">${fallbackHtml}</span></span>`;
+    }
+    function assetFail(img) {
+        img.style.display = 'none';
+        let fb = img.nextElementSibling;
+        if (fb) fb.classList.remove('hidden');
+    }
+
     let globalOperations = {}; 
     let currentViewingId = null;
     let currentEditingId = null;
@@ -288,50 +387,129 @@
 
         ops.forEach(op => {
             if (op.status === 'pending') {
-                activeHtml += `
-                    <tr>
-                        <td class="text-xs text-gray-400">${new Date(op.timestamp).toLocaleString('th-TH', {dateStyle:'short', timeStyle:'short'})}</td>
-                        <td class="font-bold text-white">${op.host}</td>
-                        <td>${op.players}</td>
-                        <td class="text-amber-300">${op.primary}</td>
-                        <td class="text-emerald-400 font-bold">$${(op.netPayout || 0).toLocaleString()}</td>
-                        <td><span class="status-badge status-pending">PENDING</span></td>
-                        <td>
-                            <div class="flex justify-center gap-2">
-                                <button class="btn-cyber !text-[10px] !py-1 !px-2" onclick="viewOperationDetail('${op.id}')">VIEW</button>
-                                <button class="btn-cyber !text-[10px] !py-1 !px-2 !border-red-500 !text-red-500 hover:!bg-red-500 hover:!text-black" onclick="promptDelete('${op.id}')">🗑️</button>
-                            </div>
-                        </td>
-                    </tr>`;
+                activeHtml += buildOperationCard(op);
             } else {
                 let compTime = op.completedAt || op.timestamp;
                 let cooldownMins = op.players === 1 ? 144 : 48;
                 let nextTime = compTime + (cooldownMins * 60000);
-                
-                let nextBadge = (now >= nextTime) 
-                    ? `<span class="text-emerald-400 font-bold">✅ READY</span>` 
+
+                let nextBadge = (now >= nextTime)
+                    ? `<span class="text-emerald-400 font-bold">✅ READY</span>`
                     : `<span class="text-amber-400 font-bold animate-pulse">⏳ ${new Date(nextTime).toLocaleString('th-TH', { month:'short', day:'numeric', hour: '2-digit', minute:'2-digit' })} น.</span>`;
 
                 archiveHtml += `
-                    <tr>
+                    <tr class="archive-row" onclick="viewOperationDetail('${op.id}')">
                         <td class="text-xs text-gray-400">${new Date(compTime).toLocaleString('th-TH', {dateStyle:'short', timeStyle:'short'})}</td>
                         <td class="text-xs">${nextBadge}</td>
                         <td class="font-bold text-white">${op.host}</td>
                         <td>${op.players}</td>
-                        <td class="text-amber-300">${op.primary}</td>
-                        <td class="text-emerald-400 font-bold">$${(op.netPayout || 0).toLocaleString()}</td>
-                        <td>
-                            <div class="flex justify-center gap-2">
-                                <button class="btn-cyber !text-[10px] !py-1 !px-2" onclick="viewOperationDetail('${op.id}')">VIEW</button>
-                                <button class="btn-cyber !text-[10px] !py-1 !px-2 !border-red-500 !text-red-500 hover:!bg-red-500 hover:!text-black" onclick="promptDelete('${op.id}')">🗑️</button>
-                            </div>
-                        </td>
+                        <td class="text-amber-300">${targetName(op.primary)}</td>
+                        <td class="text-emerald-400 font-bold whitespace-nowrap">$${(op.netPayout || 0).toLocaleString()}<button class="row-kill" title="PURGE RECORD" onclick="event.stopPropagation(); promptDelete('${op.id}')">🗑</button></td>
                     </tr>`;
             }
         });
 
-        document.getElementById('dash-active-body').innerHTML = activeHtml || '<tr><td colspan="7" class="text-gray-500 py-4">-- NO ACTIVE OPERATIONS --</td></tr>';
-        document.getElementById('dash-archive-body').innerHTML = archiveHtml || '<tr><td colspan="7" class="text-gray-500 py-4">-- NO RECORDS FOUND --</td></tr>';
+        document.getElementById('dash-active-cards').innerHTML = activeHtml || `
+            <div class="hud-frame hud-green p-10 text-center">
+                ${ICON_FOLDER}
+                <div class="text-emerald-800 tracking-[0.2em] text-sm">-- NO ACTIVE OPERATIONS --</div>
+            </div>`;
+        document.getElementById('dash-archive-body').innerHTML = archiveHtml || `<tr><td colspan="6" class="py-10">${ICON_FOLDER}<div class="text-emerald-800 tracking-[0.2em] text-sm">-- NO RECORDS FOUND --</div></td></tr>`;
+    }
+
+    function targetName(primary) { return (primaryMeta[primary] || {}).name || (primary || 'UNKNOWN'); }
+
+    // --- ACTIVE OPERATION HUD CARD ---
+    function buildOperationCard(op) {
+        let res, card;
+        try { res = generateBriefingHTML(op); card = res.card; }
+        catch (e) { card = null; }
+
+        let target = primaryMeta[op.primary] || { name: (op.primary || 'UNKNOWN'), glyph: '❓' };
+        let payout = Math.round(op.netPayout || (res ? res.net : 0));
+        let stamp = new Date(op.timestamp).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' });
+
+        let lootHtml = (card && card.scouted.length)
+            ? card.scouted.map(l => `
+                <div class="flex items-center gap-3">
+                    ${assetSlot(l.img, 'loot-icon', `<span class="text-3xl leading-none">${l.emoji}</span>`, l.label)}
+                    <div class="leading-tight">
+                        <div class="text-xs font-bold tracking-[0.15em] ${l.color}">${l.label}</div>
+                        <div class="text-xs text-gray-400">x${l.qty}</div>
+                    </div>
+                </div>`).join('')
+            : `<span class="text-emerald-800 text-xs tracking-widest">-- NO SECONDARY LOOT SCOUTED --</span>`;
+
+        let planHtml = (card && card.planRows.length)
+            ? card.planRows.map(r => `
+                <div class="grid grid-cols-[auto_auto_auto_1fr] items-center gap-x-3 gap-y-1">
+                    <span class="text-emerald-400 tracking-[0.12em] text-xs">PLAYER ${r.player}</span>
+                    <span class="text-sm leading-none">${r.icons || '🏰'}</span>
+                    <span class="loc-chip">${r.locs.length ? r.locs.map(l => l.toUpperCase()).join(' / ') : 'STANDBY'}</span>
+                    <span class="text-amber-300 text-xs">${r.loot.map(l => `${l.type} ${l.qty.replace(' กอง','').replace(' ภาพ','')}`).join(' <span class="text-emerald-800">|</span> ') || '<span class="text-gray-600">--</span>'}</span>
+                </div>`).join('')
+            : `<span class="text-emerald-800 text-xs tracking-widest">-- PLAN UNAVAILABLE --</span>`;
+
+        return `
+        <div class="hud-frame p-6 md:p-7">
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+                <h2 class="text-xl md:text-2xl font-bold text-amber-400 tracking-[0.12em] flex items-center gap-3">⚡ ACTIVE OPERATION</h2>
+                <span class="pill-ready"><span class="dot"></span>READY</span>
+                <span class="ml-auto text-[11px] text-emerald-700 tracking-[0.12em] whitespace-nowrap">HOST: ${op.host} · CREW: ${op.players} · ${(op.mode || 'Normal').toUpperCase()} · ${stamp}</span>
+            </div>
+            <p class="text-xs text-emerald-600 tracking-[0.25em] mt-1 mb-5">CAYO PERICO HEIST</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-[1.05fr_0.85fr_1.4fr] border border-emerald-900">
+                <!-- PRIMARY TARGET -->
+                <div class="p-5 border-b lg:border-b-0 lg:border-r border-emerald-900">
+                    <div class="hud-label mb-4">Primary Target</div>
+                    <div class="text-2xl md:text-3xl font-bold text-white tracking-[0.08em] mb-4 text-center">${target.name}</div>
+                    <div class="target-art mb-5">${target.img ? assetSlot(target.img, 'art-img', `<span class="glyph">${target.glyph}</span>`, target.name) : `<span class="glyph">${target.glyph}</span>`}</div>
+                    <div class="hud-label mb-2">Est. Net Payout</div>
+                    <div class="text-3xl md:text-4xl font-bold text-emerald-400 text-neon tracking-wider">$${payout.toLocaleString()}</div>
+                </div>
+
+                <!-- APPROACH / ENTRY -->
+                <div class="border-b lg:border-b-0 lg:border-r border-emerald-900 flex flex-col">
+                    <div class="p-5 border-b border-emerald-900 flex-1">
+                        <div class="hud-label mb-3">Approach</div>
+                        <div class="flex justify-center py-2">${(card && !card.isKosatka)
+                            ? assetSlot(approachMeta.longfin.img, 'vessel-img', ICON_BOAT, 'Longfin')
+                            : assetSlot(approachMeta.kosatka.img, 'vessel-img', ICON_SUB, 'Kosatka')}</div>
+                        <div class="text-xl font-bold text-white tracking-[0.08em]">${card ? card.vessel.name : 'KOSATKA'}</div>
+                        <div class="text-xs text-emerald-600">${card ? card.vessel.sub : 'Submarine'}</div>
+                    </div>
+                    <div class="p-5 flex-1">
+                        <div class="hud-label mb-3">Entry Point</div>
+                        <div class="flex items-start gap-4">
+                            ${assetSlot(approachMeta.entry.img, 'entry-icon-img', ICON_TUNNEL, 'Drainage tunnel')}
+                            <div>
+                                <div class="text-base font-bold text-white tracking-[0.06em]">${card ? card.entry.name : 'DRAINAGE TUNNEL'}</div>
+                                <div class="text-xs text-emerald-600 leading-snug">${card ? card.entry.sub : 'Enter compound directly'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LOOT / PLAN -->
+                <div class="flex flex-col">
+                    <div class="p-5 border-b border-emerald-900">
+                        <div class="hud-label mb-4">Secondary Loot</div>
+                        <div class="flex flex-wrap gap-x-8 gap-y-4">${lootHtml}</div>
+                    </div>
+                    <div class="p-5 flex-1">
+                        <div class="hud-label mb-4">Plan Summary</div>
+                        <div class="space-y-2">${planHtml}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-5">
+                <button class="hud-action" onclick="viewOperationDetail('${op.id}')">👁 View Full Plan</button>
+                <button class="hud-action" onclick="editOperation('${op.id}')">✏️ Edit Plan</button>
+                <button class="hud-action danger" onclick="promptDelete('${op.id}')">🗑 Abort Operation</button>
+            </div>
+        </div>`;
     }
 
     // --- MODAL DELETE LOGIC ---
@@ -483,6 +661,18 @@
 
     function generateBriefingHTML(data) {
         let players = data.players, routeMode = data.routeMode, totalBagCapacity = players * 100.0, insideItems = [], insideTotalSpace = 0, compIntel = [], outIntel = [];
+
+        // -- Normalize (guards against partial records coming back from the server) --
+        data.compound = data.compound || {}; data.outside = data.outside || {};
+        compoundRooms.forEach(r => { let d = data.compound[r] || {}; data.compound[r] = { gold: +d.gold || 0, paint: +d.paint || 0, cash: +d.cash || 0 }; });
+        outsideLocs.forEach(l => { let d = data.outside[l] || {}; data.outside[l] = { coke: +d.coke || 0, weed: +d.weed || 0, cash: +d.cash || 0 }; });
+
+        // -- Scouted secondary loot totals (everything spotted on the island) --
+        let scoutedTotals = { Gold: 0, Cocaine: 0, Weed: 0, Paint: 0, Cash: 0 };
+        compoundRooms.forEach(r => { scoutedTotals.Gold += data.compound[r].gold; scoutedTotals.Paint += data.compound[r].paint; scoutedTotals.Cash += data.compound[r].cash; });
+        outsideLocs.forEach(l => { scoutedTotals.Cocaine += data.outside[l].coke; scoutedTotals.Weed += data.outside[l].weed; scoutedTotals.Cash += data.outside[l].cash; });
+        let scouted = Object.keys(scoutedTotals).filter(k => scoutedTotals[k] > 0).map(k => ({ ...lootMeta[k], type: k, qty: scoutedTotals[k] }));
+
         
         for (let r of compoundRooms) {
             let d = data.compound[r], rItems=[];
@@ -553,23 +743,25 @@
             }
         }
 
-        let totalSecondaryVal = 0, taskHtml = stubbornNote ? `<div class="mb-3 text-amber-400 font-bold">${stubbornNote}</div>` : '';
+        let totalSecondaryVal = 0, planRows = [], taskHtml = stubbornNote ? `<div class="mb-3 text-amber-400 font-bold">${stubbornNote}</div>` : '';
         taskHtml += `<div class="mb-3 text-emerald-400 font-bold">> STRATEGY & JOURNEY: <span class="text-white">${approachText}</span></div>`;
 
         playerBags.forEach((bag, idx) => {
             let locGroups = {}; bag.items.forEach(it => { if (!locGroups[it.loc]) locGroups[it.loc] = []; locGroups[it.loc].push(it); });
             let sortedLocKeys = Object.keys(locGroups).sort((a, b) => ({'Airstrip':1,'Main Dock':2,'Base':3,'North':4,'West':5,'South':6}[a]||99) - ({'Airstrip':1,'Main Dock':2,'Base':3,'North':4,'West':5,'South':6}[b]||99));
-            let briefingTags = [], headerIcons = "", hasAirstrip = false, hasDock = false, hasMansion = false;
+            let briefingTags = [], headerIcons = "", hasAirstrip = false, hasDock = false, hasMansion = false, rowLocs = [], rowLoot = [];
             sortedLocKeys.forEach(loc => {
                 let itemsInLoc = locGroups[loc], tagHtml = "";
                 if (loc === 'Airstrip') { tagHtml = `<span class="tactical-badge badge-airstrip">🛬 Airstrip</span>`; hasAirstrip = true; } 
                 else if (loc === 'Main Dock') { tagHtml = `<span class="tactical-badge badge-dock">⚓ Main Dock</span>`; hasDock = true; } 
                 else { tagHtml = `<span class="tactical-badge badge-mansion">🏰 (${loc})</span>`; hasMansion = true; }
+                rowLocs.push(loc);
 
                 let subDesc = itemsInLoc.map(it => {
                     let qtyStr = "";
                     if (it.type === 'Paint') qtyStr = Math.round(it.weight / 50.0) + " ภาพ";
                     else { let p = it.weight / (it.type==='Gold'?66.6667:it.type==='Cocaine'?50.0:it.type==='Weed'?37.5:25.0); qtyStr = (Math.abs(p - Math.round(p)) < 0.05) ? Math.round(p) + " กอง" : p.toFixed(2) + " กอง"; }
+                    rowLoot.push({ type: it.type, emoji: it.emoji, qty: qtyStr });
                     return `${it.emoji} ${it.type} ${qtyStr}`;
                 }).join(', ');
                 briefingTags.push(`${tagHtml} ${subDesc}`); itemsInLoc.forEach(it => totalSecondaryVal += it.val);
@@ -578,6 +770,7 @@
             let bagDisplayPct = Math.min(Math.round(bag.space), 100);
             let bagColorClass = bagDisplayPct >= 100 ? "text-amber-300" : "text-red-400 font-bold animate-pulse";
             taskHtml += `<div class="cyber-panel p-3 mb-3 bg-black/40"><div class="text-emerald-300 font-bold flex justify-between items-center"><span>PLAYER ${idx + 1} TASK: <span class="text-lg ml-1">${headerIcons}</span></span><span class="text-xs ${bagColorClass}">👜 กระเป๋าบรรจุ: ${bagDisplayPct}%</span></div><div class="text-white text-sm mt-2"><div>📍 จุดปฏิบัติการ: ${briefingTags.join(' &nbsp;|&nbsp; ') || '<span class="text-gray-500">Standby Support</span>'}</div></div></div>`;
+            planRows.push({ player: idx + 1, icons: headerIcons, locs: rowLocs, loot: rowLoot, load: bagDisplayPct });
         });
 
         let primaryVal = primaryValues[data.primary][data.mode], gross = primaryVal + totalSecondaryVal, net = gross * 0.88;
@@ -587,7 +780,15 @@
         else if (players === 3) finHtml += `> Host (40%): <span class="text-white">$${Math.round(net * 0.4).toLocaleString()}</span><br>> Crew 1 (30%): <span class="text-white">$${Math.round(net * 0.3).toLocaleString()}</span><br>> Crew 2 (30%): <span class="text-white">$${Math.round(net * 0.3).toLocaleString()}</span>`;
         else finHtml += `> Host (40%): <span class="text-white">$${Math.round(net * 0.4).toLocaleString()}</span><br>> Crew (20% each): <span class="text-white">$${Math.round(net * 0.2).toLocaleString()}</span>`;
 
-        return { summaryHtml, taskHtml, finHtml, net };
+        let card = {
+            vessel: isKosatka ? approachMeta.kosatka : approachMeta.longfin,
+            isKosatka,
+            stops: chosenOutsideLocations,
+            entry: { name: 'DRAINAGE TUNNEL', sub: chosenOutsideLocations.length ? `Via ${chosenOutsideLocations.join(' ➔ ')}` : 'Enter compound directly' },
+            scouted, planRows
+        };
+
+        return { summaryHtml, taskHtml, finHtml, net, card };
     }
 
     function viewOperationDetail(opId) {
